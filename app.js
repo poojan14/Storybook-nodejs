@@ -19,7 +19,6 @@ require('./config/passport')(passport)
 connectDB()
 
 const app = express()
-
 // Body parser
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
@@ -53,7 +52,7 @@ const {
 // Handlebars
 app.engine(
   '.hbs',
-  exphbs({
+  exphbs.engine({
     helpers: {
       formatDate,
       stripTags,
@@ -81,11 +80,13 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-// Set global var
-app.use(function (req, res, next) {
-  res.locals.user = req.user || null
-  next()
-})
+// Set global var during editicon index.hbs
+app.use((req, res, next)=> { res.locals.user = req.user || null; next() })
+
+
+//bcoz push to heroku
+app.set('trust proxy', 1);
+
 
 // Static folder
 app.use(express.static(path.join(__dirname, 'public')))
@@ -94,6 +95,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', require('./routes/index'))
 app.use('/auth', require('./routes/auth'))
 app.use('/stories', require('./routes/stories'))
+
 
 const PORT = process.env.PORT || 3000
 
