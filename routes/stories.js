@@ -25,21 +25,22 @@ router.post('/', ensureAuth, async (req, res) => {
 
 // @desc    Show all stories
 // @route   GET /stories
-router.get('/', ensureAuth, async (req, res) => {
-  try {
-    const stories = await Story.find({ status: 'public' })
-      .populate('user')
-      .sort({ createdAt: 'desc' })
-      .lean()
 
+// stories index
+router.get('/', ensureAuth,(req,res) => {
+  // populate will fetch user data as well (data which was reference by the model)
+  Story.find({
+    status: 'public'
+  }).populate(
+    'user'
+  ).sort({
+    date: 'desc'
+  }).then((stories) => {
     res.render('stories/index', {
-      stories,
-    })
-  } catch (err) {
-    console.error(err)
-    res.render('error/500')
-  }
-})
+      stories: stories
+    });
+  });
+});
 
 // @desc    Show single story
 // @route   GET /stories/:id
