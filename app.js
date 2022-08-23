@@ -52,7 +52,7 @@ const {
 // Handlebars
 app.engine(
   '.hbs',
-  exphbs({
+  exphbs.engine({
     helpers: {
       formatDate,
       stripTags,
